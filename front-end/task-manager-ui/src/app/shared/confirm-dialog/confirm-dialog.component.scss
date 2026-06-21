@@ -1,0 +1,36 @@
+.confirm-dialog-wrapper {
+  padding: 1.5rem 1.5rem 0.5rem;
+}
+
+.confirm-icon-circle {
+  width: 72px;
+  height: 72px;
+  background-color: #fdecea;
+}
+
+.confirm-icon {
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+  color: #c62828;
+}
+
+.confirm-title {
+  font-size: 1.25rem !important;
+  color: #212121;
+  padding: 0 !important;
+}
+
+.confirm-content {
+  padding: 0.5rem 0 1rem !important;
+  max-width: 340px;
+}
+
+.confirm-message {
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.confirm-btn {
+  min-width: 120px;
+}

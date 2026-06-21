@@ -1,0 +1,36 @@
+@use '@angular/material' as mat;
+@import 'bootstrap/scss/bootstrap';
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background: #f5f5f5;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+// Snackbar status colours
+.snack-success .mdc-snackbar__surface {
+  background-color: #43a047 !important;
+  color: white !important;
+}
+
+.snack-error .mdc-snackbar__surface {
+  background-color: #e53935 !important;
+  color: white !important;
+}
+
+// Global scrollbar
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
