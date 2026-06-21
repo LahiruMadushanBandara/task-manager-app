@@ -1,0 +1,64 @@
+<div class="form-container">
+  <div class="form-header">
+    <mat-icon color="primary">{{ isEditMode ? 'edit_note' : 'add_task' }}</mat-icon>
+    <h3>{{ isEditMode ? 'Edit Task' : 'New Task' }}</h3>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="task-form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Title *</mat-label>
+      <input matInput formControlName="title" placeholder="Enter task title" />
+      @if (form.controls.title.hasError('required') && form.controls.title.touched) {
+        <mat-error>Title is required.</mat-error>
+      }
+      @if (form.controls.title.hasError('maxlength')) {
+        <mat-error>Title cannot exceed 200 characters.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description"
+                placeholder="Optional description"
+                rows="3"></textarea>
+    </mat-form-field>
+
+    <div class="row-fields">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Priority</mat-label>
+        <mat-select formControlName="priority">
+          @for (opt of priorityOptions; track opt.value) {
+            <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Due Date</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="dueDate" />
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    @if (isEditMode) {
+      <mat-checkbox formControlName="isCompleted" color="primary">
+        Mark as completed
+      </mat-checkbox>
+    }
+
+    <div class="form-actions">
+      @if (isEditMode) {
+        <button mat-stroked-button type="button" (click)="cancel()">
+          <mat-icon>close</mat-icon> Cancel
+        </button>
+      }
+      <button mat-raised-button color="primary" type="submit" [disabled]="isLoading">
+        <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+        {{ isEditMode ? 'Save Changes' : 'Add Task' }}
+      </button>
+    </div>
+  </form>
+</div>

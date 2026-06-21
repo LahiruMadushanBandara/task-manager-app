@@ -1,0 +1,66 @@
+@if (tasks.length === 0) {
+  <div class="empty-state">
+    <mat-icon>assignment</mat-icon>
+    <p>No tasks found.</p>
+    <small>Add a task using the form on the right.</small>
+  </div>
+} @else {
+  <div class="task-list">
+    @for (task of tasks; track task.id) {
+      <mat-card
+        class="task-card"
+        [class.selected]="task.id === selectedTaskId"
+        [class.completed]="task.isCompleted"
+        (click)="taskSelected.emit(task)">
+
+        <mat-card-content>
+          <div class="task-header">
+            <mat-checkbox
+              [checked]="task.isCompleted"
+              (click)="$event.stopPropagation()"
+              (change)="toggleComplete.emit(task)"
+              matTooltip="{{ task.isCompleted ? 'Mark incomplete' : 'Mark complete' }}">
+            </mat-checkbox>
+
+            <span class="task-title" [class.strikethrough]="task.isCompleted">
+              {{ task.title }}
+            </span>
+
+            <div class="task-actions">
+              <button mat-icon-button color="primary"
+                      (click)="$event.stopPropagation(); taskSelected.emit(task)"
+                      matTooltip="Edit task">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn"
+                      (click)="$event.stopPropagation(); deleteTask.emit(task)"
+                      matTooltip="Delete task">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          @if (task.description) {
+            <p class="task-description">{{ task.description }}</p>
+          }
+
+          <div class="task-meta">
+            <mat-chip [class]="priorityClass(task.priority)" selected>
+              {{ task.priorityLabel }}
+            </mat-chip>
+
+            @if (task.dueDate) {
+              <span class="due-date" [class.overdue]="isOverdue(task)">
+                <mat-icon>event</mat-icon>
+                {{ task.dueDate | date:'mediumDate' }}
+                @if (isOverdue(task)) {
+                  <mat-icon class="overdue-icon">warning</mat-icon>
+                }
+              </span>
+            }
+          </div>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+}
