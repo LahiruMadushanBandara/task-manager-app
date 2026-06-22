@@ -3,8 +3,7 @@ using TaskManager.API.Models.DTOs;
 
 namespace TaskManager.API.Handlers;
 
-// Catches any unhandled exception, logs it server-side, and returns a 500 in the
-// same ApiResponse envelope the rest of the API uses — never leaking stack traces.
+// Logs unhandled exceptions and returns a 500 in the ApiResponse envelope.
 public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(
@@ -12,6 +11,10 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
         Exception exception,
         CancellationToken cancellationToken)
     {
+        // Client aborted the request — not a server error, so ignore it.
+        if (exception is OperationCanceledException && httpContext.RequestAborted.IsCancellationRequested)
+            return true;
+
         logger.LogError(exception, "Unhandled exception for {Method} {Path}",
             httpContext.Request.Method, httpContext.Request.Path);
 

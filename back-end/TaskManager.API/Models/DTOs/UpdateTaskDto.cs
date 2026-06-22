@@ -14,6 +14,7 @@ public class UpdateTaskDto
 
     public bool IsCompleted { get; set; }
 
+    [EnumDataType(typeof(TaskPriority), ErrorMessage = "Priority must be 0 (Low), 1 (Medium), or 2 (High).")]
     public TaskPriority Priority { get; set; } = TaskPriority.Medium;
 
     public DateTime? DueDate { get; set; }

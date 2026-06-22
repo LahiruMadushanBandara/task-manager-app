@@ -9,8 +9,7 @@ namespace TaskManager.API.Controllers;
 [Route("api/auth")]
 public class AuthController : ControllerBase
 {
-    // The authentication handler validates credentials; reaching this action
-    // means the request is already authenticated.
+    // Reaching here means the handler already validated the credentials.
     [HttpPost("verify")]
     [Authorize]
     public IActionResult Verify()

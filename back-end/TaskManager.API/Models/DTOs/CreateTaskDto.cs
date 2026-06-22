@@ -12,6 +12,7 @@ public class CreateTaskDto
     [MaxLength(1000, ErrorMessage = "Description cannot exceed 1000 characters.")]
     public string? Description { get; set; }
 
+    [EnumDataType(typeof(TaskPriority), ErrorMessage = "Priority must be 0 (Low), 1 (Medium), or 2 (High).")]
     public TaskPriority Priority { get; set; } = TaskPriority.Medium;
 
     public DateTime? DueDate { get; set; }

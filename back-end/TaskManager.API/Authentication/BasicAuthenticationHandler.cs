@@ -42,8 +42,7 @@ public class BasicAuthenticationHandler(
         return AuthenticateResult.Success(ticket);
     }
 
-    // Return JSON instead of a WWW-Authenticate header so the browser's native
-    // Basic auth dialog never appears in front of the Angular login page.
+    // Return JSON, not WWW-Authenticate, to avoid the browser's native login popup.
     protected override async Task HandleChallengeAsync(AuthenticationProperties properties)
     {
         Response.StatusCode = StatusCodes.Status401Unauthorized;

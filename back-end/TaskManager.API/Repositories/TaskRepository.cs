@@ -16,8 +16,7 @@ public class TaskRepository(AppDbContext context) : ITaskRepository
 
         if (!string.IsNullOrWhiteSpace(filters.Search))
         {
-            // SQL Server's default collation is case-insensitive, so Contains
-            // translates to a SARGable LIKE without forcing LOWER() on the column.
+            // Default SQL Server collation is case-insensitive, so no LOWER() needed.
             var term = filters.Search.Trim();
             query = query.Where(t => t.Title.Contains(term) ||
                                      (t.Description != null && t.Description.Contains(term)));
@@ -54,8 +53,7 @@ public class TaskRepository(AppDbContext context) : ITaskRepository
         return task;
     }
 
-    // The entity is already change-tracked by GetByIdAsync, so SaveChanges emits
-    // an UPDATE for only the modified columns. No explicit Update() call needed.
+    // Entity is already tracked by GetByIdAsync, so SaveChanges updates only changed columns.
     public async Task<TaskItem> UpdateAsync(TaskItem task, CancellationToken cancellationToken = default)
     {
         await context.SaveChangesAsync(cancellationToken);
