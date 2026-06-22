@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.API.Models.DTOs;
 using TaskManager.API.Services.Contracts;
@@ -6,11 +8,12 @@ namespace TaskManager.API.Controllers;
 
 [ApiController]
 [Route("api/tasks")]
+[Authorize]
 public class TasksController(ITaskService taskService) : ControllerBase
 {
-    private int CurrentUserId => HttpContext.Items.TryGetValue("UserId", out var value) && value is int id
+    private int CurrentUserId => int.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id)
         ? id
-        : throw new InvalidOperationException("UserId not set by authentication middleware.");
+        : throw new InvalidOperationException("UserId claim not present on the authenticated principal.");
 
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] TaskFilterParams filters)

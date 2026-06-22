@@ -1,7 +1,8 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using TaskManager.API.Authentication;
 using TaskManager.API.Data;
-using TaskManager.API.Middleware;
 using TaskManager.API.Repositories;
 using TaskManager.API.Repositories.Contracts;
 using TaskManager.API.Services;
@@ -16,6 +17,11 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
+
+builder.Services.AddAuthentication(BasicAuthenticationHandler.SchemeName)
+    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>(
+        BasicAuthenticationHandler.SchemeName, null);
+builder.Services.AddAuthorization();
 
 builder.Services.AddCors(options =>
 {
@@ -90,7 +96,8 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseMiddleware<BasicAuthMiddleware>();
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
