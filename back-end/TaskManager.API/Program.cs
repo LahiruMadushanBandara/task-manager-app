@@ -4,6 +4,7 @@ using Microsoft.OpenApi.Models;
 using TaskManager.API.Authentication;
 using TaskManager.API.Data;
 using TaskManager.API.Handlers;
+using TaskManager.API.Middleware;
 using TaskManager.API.Repositories;
 using TaskManager.API.Repositories.Contracts;
 using TaskManager.API.Services;
@@ -89,6 +90,7 @@ builder.Services.AddSwaggerGen(options =>
 var app = builder.Build();
 
 app.UseExceptionHandler();
+app.UseMiddleware<RequestCancellationMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {

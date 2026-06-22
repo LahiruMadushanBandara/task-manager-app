@@ -11,10 +11,6 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
         Exception exception,
         CancellationToken cancellationToken)
     {
-        // Client aborted the request — not a server error, so ignore it.
-        if (exception is OperationCanceledException && httpContext.RequestAborted.IsCancellationRequested)
-            return true;
-
         logger.LogError(exception, "Unhandled exception for {Method} {Path}",
             httpContext.Request.Method, httpContext.Request.Path);
 
