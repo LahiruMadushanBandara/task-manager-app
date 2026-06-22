@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -44,6 +44,7 @@ import { PRIORITY_OPTIONS, SORT_OPTIONS, Task, TaskFilterParams } from '../../mo
   ],
   templateUrl: './task-board.component.html',
   styleUrls: ['./task-board.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskBoardComponent {
   private readonly taskService = inject(TaskService);
@@ -52,10 +53,10 @@ export class TaskBoardComponent {
   private readonly dialog = inject(MatDialog);
   private readonly fb = inject(FormBuilder);
 
-  tasks: Task[] = [];
-  selectedTask: Task | null = null;
-  isLoadingTasks = false;
-  isSubmitting = false;
+  readonly tasks = signal<Task[]>([]);
+  readonly selectedTask = signal<Task | null>(null);
+  readonly isLoadingTasks = signal(false);
+  readonly isSubmitting = signal(false);
 
   readonly priorityOptions = PRIORITY_OPTIONS;
   readonly sortOptions = SORT_OPTIONS;
@@ -84,18 +85,18 @@ export class TaskBoardComponent {
       startWith(null),
       takeUntilDestroyed(),
       switchMap(() => {
-        this.isLoadingTasks = true;
+        this.isLoadingTasks.set(true);
         return this.taskService.getAll(this.buildFilters()).pipe(
           catchError(() => {
-            this.isLoadingTasks = false;
+            this.isLoadingTasks.set(false);
             this.snackbar.error('Failed to load tasks.');
             return EMPTY;
           })
         );
       }),
     ).subscribe(tasks => {
-      this.tasks = tasks;
-      this.isLoadingTasks = false;
+      this.tasks.set(tasks);
+      this.isLoadingTasks.set(false);
     });
   }
 
@@ -115,11 +116,11 @@ export class TaskBoardComponent {
   }
 
   onTaskSelected(task: Task): void {
-    this.selectedTask = this.selectedTask?.id === task.id ? null : task;
+    this.selectedTask.set(this.selectedTask()?.id === task.id ? null : task);
   }
 
   onNewTask(): void {
-    this.selectedTask = null;
+    this.selectedTask.set(null);
   }
 
   onFormSubmit(data: {
@@ -129,30 +130,31 @@ export class TaskBoardComponent {
     priority: 0 | 1 | 2;
     dueDate?: string;
   }): void {
-    this.isSubmitting = true;
+    this.isSubmitting.set(true);
+    const current = this.selectedTask();
 
-    if (this.selectedTask) {
-      this.taskService.update(this.selectedTask.id, data).subscribe({
+    if (current) {
+      this.taskService.update(current.id, data).subscribe({
         next: updated => {
-          this.tasks = this.tasks.map(t => t.id === updated.id ? updated : t);
-          this.selectedTask = null;
-          this.isSubmitting = false;
+          this.tasks.update(list => list.map(t => t.id === updated.id ? updated : t));
+          this.selectedTask.set(null);
+          this.isSubmitting.set(false);
           this.snackbar.success('Task updated.');
         },
         error: () => {
-          this.isSubmitting = false;
+          this.isSubmitting.set(false);
           this.snackbar.error('Failed to update task.');
         },
       });
     } else {
       this.taskService.create(data).subscribe({
         next: created => {
-          this.tasks = [created, ...this.tasks];
-          this.isSubmitting = false;
+          this.tasks.update(list => [created, ...list]);
+          this.isSubmitting.set(false);
           this.snackbar.success('Task created.');
         },
         error: () => {
-          this.isSubmitting = false;
+          this.isSubmitting.set(false);
           this.snackbar.error('Failed to create task.');
         },
       });
@@ -162,8 +164,8 @@ export class TaskBoardComponent {
   onToggleComplete(task: Task): void {
     this.taskService.toggleComplete(task.id).subscribe({
       next: updated => {
-        this.tasks = this.tasks.map(t => t.id === updated.id ? updated : t);
-        if (this.selectedTask?.id === updated.id) this.selectedTask = updated;
+        this.tasks.update(list => list.map(t => t.id === updated.id ? updated : t));
+        if (this.selectedTask()?.id === updated.id) this.selectedTask.set(updated);
       },
       error: () => this.snackbar.error('Failed to update task status.'),
     });
@@ -184,8 +186,8 @@ export class TaskBoardComponent {
 
       this.taskService.delete(task.id).subscribe({
         next: () => {
-          this.tasks = this.tasks.filter(t => t.id !== task.id);
-          if (this.selectedTask?.id === task.id) this.selectedTask = null;
+          this.tasks.update(list => list.filter(t => t.id !== task.id));
+          if (this.selectedTask()?.id === task.id) this.selectedTask.set(null);
           this.snackbar.success('Task deleted.');
         },
         error: () => this.snackbar.error('Failed to delete task.'),

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -30,6 +30,7 @@ import { PRIORITY_OPTIONS, Task } from '../../models/task.model';
   ],
   templateUrl: './task-form.component.html',
   styleUrls: ['./task-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskFormComponent implements OnChanges {
   @Input() selectedTask: Task | null = null;

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -26,6 +26,7 @@ import { SnackbarService } from '../../shared/snackbar.service';
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
   private readonly fb = inject(FormBuilder);
@@ -38,19 +39,19 @@ export class LoginComponent {
     password: ['', Validators.required],
   });
 
-  isLoading = false;
+  readonly isLoading = signal(false);
   hidePassword = true;
 
   submit(): void {
     if (this.form.invalid) return;
 
-    this.isLoading = true;
+    this.isLoading.set(true);
     const { username, password } = this.form.getRawValue();
 
     this.auth.verify(username, password).subscribe({
       next: () => this.router.navigate(['/tasks']),
       error: () => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this.snackbar.error('Invalid username or password.');
       },
     });

@@ -31,8 +31,8 @@
         </mat-form-field>
 
         <button mat-raised-button color="primary" type="submit"
-                class="full-width login-btn" [disabled]="isLoading">
-          @if (isLoading) {
+                class="full-width login-btn" [disabled]="isLoading()">
+          @if (isLoading()) {
             <mat-spinner diameter="20"></mat-spinner>
           } @else {
             Sign In

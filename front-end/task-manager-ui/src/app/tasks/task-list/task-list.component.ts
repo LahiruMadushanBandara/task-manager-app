@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -25,6 +25,7 @@ import { Task } from '../../models/task.model';
   ],
   templateUrl: './task-list.component.html',
   styleUrls: ['./task-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskListComponent {
   @Input() tasks: Task[] = [];

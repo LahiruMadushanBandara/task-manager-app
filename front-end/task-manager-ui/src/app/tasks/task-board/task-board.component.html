@@ -8,7 +8,7 @@
   </button>
 </mat-toolbar>
 
-@if (isLoadingTasks) {
+@if (isLoadingTasks()) {
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 }
 
@@ -62,7 +62,7 @@
         <mat-icon>filter_alt_off</mat-icon>
       </button>
 
-      @if (selectedTask) {
+      @if (selectedTask()) {
         <button mat-raised-button color="accent" (click)="onNewTask()" matTooltip="Discard edit and add a new task">
           <mat-icon>add</mat-icon> New Task
         </button>
@@ -76,14 +76,14 @@
       <mat-card-header>
         <mat-card-title>
           Tasks
-          <span class="task-count">({{ tasks.length }})</span>
+          <span class="task-count">({{ tasks().length }})</span>
         </mat-card-title>
       </mat-card-header>
       <mat-divider></mat-divider>
       <mat-card-content class="panel-content">
         <app-task-list
-          [tasks]="tasks"
-          [selectedTaskId]="selectedTask?.id ?? null"
+          [tasks]="tasks()"
+          [selectedTaskId]="selectedTask()?.id ?? null"
           (taskSelected)="onTaskSelected($event)"
           (toggleComplete)="onToggleComplete($event)"
           (deleteTask)="onDeleteTask($event)">
@@ -94,8 +94,8 @@
     <mat-card class="panel form-panel">
       <mat-card-content class="panel-content">
         <app-task-form
-          [selectedTask]="selectedTask"
-          [isLoading]="isSubmitting"
+          [selectedTask]="selectedTask()"
+          [isLoading]="isSubmitting()"
           (formSubmit)="onFormSubmit($event)"
           (cancelEdit)="onNewTask()">
         </app-task-form>
