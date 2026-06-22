@@ -8,7 +8,7 @@ namespace TaskManager.API.Repositories;
 
 public class TaskRepository(AppDbContext context) : ITaskRepository
 {
-    public async Task<IEnumerable<TaskItem>> GetAllAsync(int userId, TaskFilterParams filters)
+    public async Task<IEnumerable<TaskItem>> GetAllAsync(int userId, TaskFilterParams filters, CancellationToken cancellationToken = default)
     {
         var query = context.Tasks
             .AsNoTracking()
@@ -16,9 +16,11 @@ public class TaskRepository(AppDbContext context) : ITaskRepository
 
         if (!string.IsNullOrWhiteSpace(filters.Search))
         {
-            var term = filters.Search.Trim().ToLower();
-            query = query.Where(t => t.Title.ToLower().Contains(term) ||
-                                     (t.Description != null && t.Description.ToLower().Contains(term)));
+            // SQL Server's default collation is case-insensitive, so Contains
+            // translates to a SARGable LIKE without forcing LOWER() on the column.
+            var term = filters.Search.Trim();
+            query = query.Where(t => t.Title.Contains(term) ||
+                                     (t.Description != null && t.Description.Contains(term)));
         }
 
         if (filters.IsCompleted.HasValue)
@@ -39,29 +41,30 @@ public class TaskRepository(AppDbContext context) : ITaskRepository
             _                     => query.OrderByDescending(t => t.CreatedAt),
         };
 
-        return await query.ToListAsync();
+        return await query.ToListAsync(cancellationToken);
     }
 
-    public Task<TaskItem?> GetByIdAsync(int id, int userId) =>
-        context.Tasks.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
+    public Task<TaskItem?> GetByIdAsync(int id, int userId, CancellationToken cancellationToken = default) =>
+        context.Tasks.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId, cancellationToken);
 
-    public async Task<TaskItem> CreateAsync(TaskItem task)
+    public async Task<TaskItem> CreateAsync(TaskItem task, CancellationToken cancellationToken = default)
     {
         context.Tasks.Add(task);
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(cancellationToken);
         return task;
     }
 
-    public async Task<TaskItem> UpdateAsync(TaskItem task)
+    // The entity is already change-tracked by GetByIdAsync, so SaveChanges emits
+    // an UPDATE for only the modified columns. No explicit Update() call needed.
+    public async Task<TaskItem> UpdateAsync(TaskItem task, CancellationToken cancellationToken = default)
     {
-        context.Tasks.Update(task);
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(cancellationToken);
         return task;
     }
 
-    public async Task DeleteAsync(TaskItem task)
+    public async Task DeleteAsync(TaskItem task, CancellationToken cancellationToken = default)
     {
         context.Tasks.Remove(task);
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(cancellationToken);
     }
 }

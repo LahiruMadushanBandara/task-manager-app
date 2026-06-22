@@ -25,9 +25,12 @@ public class BasicAuthenticationHandler(
         if (!BasicAuthParser.TryParse(authHeader.ToString(), out var username, out var password))
             return AuthenticateResult.Fail("Invalid Authorization header.");
 
-        var userId = await authService.ValidateCredentialsAsync(username, password);
+        var userId = await authService.ValidateCredentialsAsync(username, password, Context.RequestAborted);
         if (userId is null)
+        {
+            Logger.LogWarning("Failed login attempt for username {Username}.", username);
             return AuthenticateResult.Fail("Invalid username or password.");
+        }
 
         var claims = new[]
         {

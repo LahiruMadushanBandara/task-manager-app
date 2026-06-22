@@ -43,7 +43,10 @@ export class LoginComponent {
   hidePassword = true;
 
   submit(): void {
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
 
     this.isLoading.set(true);
     const { username, password } = this.form.getRawValue();

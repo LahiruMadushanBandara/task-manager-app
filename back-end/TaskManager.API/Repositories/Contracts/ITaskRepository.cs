@@ -5,9 +5,9 @@ namespace TaskManager.API.Repositories.Contracts;
 
 public interface ITaskRepository
 {
-    Task<IEnumerable<TaskItem>> GetAllAsync(int userId, TaskFilterParams filters);
-    Task<TaskItem?> GetByIdAsync(int id, int userId);
-    Task<TaskItem> CreateAsync(TaskItem task);
-    Task<TaskItem> UpdateAsync(TaskItem task);
-    Task DeleteAsync(TaskItem task);
+    Task<IEnumerable<TaskItem>> GetAllAsync(int userId, TaskFilterParams filters, CancellationToken cancellationToken = default);
+    Task<TaskItem?> GetByIdAsync(int id, int userId, CancellationToken cancellationToken = default);
+    Task<TaskItem> CreateAsync(TaskItem task, CancellationToken cancellationToken = default);
+    Task<TaskItem> UpdateAsync(TaskItem task, CancellationToken cancellationToken = default);
+    Task DeleteAsync(TaskItem task, CancellationToken cancellationToken = default);
 }

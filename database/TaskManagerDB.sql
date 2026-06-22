@@ -40,6 +40,7 @@ BEGIN
         CreatedAt   DATETIME2       NOT NULL DEFAULT GETUTCDATE(),
         UpdatedAt   DATETIME2       NOT NULL DEFAULT GETUTCDATE(),
         UserId      INT             NOT NULL,
+        CONSTRAINT CK_Tasks_Priority CHECK (Priority BETWEEN 0 AND 2),
         CONSTRAINT FK_Tasks_Users FOREIGN KEY (UserId) REFERENCES Users(Id) ON DELETE CASCADE
     );
 END

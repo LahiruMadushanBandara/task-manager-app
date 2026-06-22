@@ -4,5 +4,5 @@ namespace TaskManager.API.Repositories.Contracts;
 
 public interface IUserRepository
 {
-    Task<User?> GetByUsernameAsync(string username);
+    Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken = default);
 }

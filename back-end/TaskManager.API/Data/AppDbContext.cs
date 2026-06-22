@@ -26,6 +26,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             entity.Property(t => t.Description).HasMaxLength(1000);
             entity.Property(t => t.Priority).HasConversion<int>();
 
+            entity.ToTable(t => t.HasCheckConstraint("CK_Tasks_Priority", "Priority BETWEEN 0 AND 2"));
+
             entity.HasOne(t => t.User)
                   .WithMany(u => u.Tasks)
                   .HasForeignKey(t => t.UserId)
@@ -34,6 +36,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             entity.HasIndex(t => t.UserId);
             entity.HasIndex(t => t.IsCompleted);
             entity.HasIndex(t => t.Priority);
+            entity.HasIndex(t => t.DueDate);
         });
     }
 }

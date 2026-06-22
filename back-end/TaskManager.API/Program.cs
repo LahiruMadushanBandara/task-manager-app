@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using TaskManager.API.Authentication;
 using TaskManager.API.Data;
+using TaskManager.API.Handlers;
 using TaskManager.API.Repositories;
 using TaskManager.API.Repositories.Contracts;
 using TaskManager.API.Services;
@@ -22,6 +23,9 @@ builder.Services.AddAuthentication(BasicAuthenticationHandler.SchemeName)
     .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>(
         BasicAuthenticationHandler.SchemeName, null);
 builder.Services.AddAuthorization();
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddCors(options =>
 {
@@ -84,7 +88,7 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-app.UseCors("AllowAngular");
+app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
 {
@@ -95,7 +99,13 @@ if (app.Environment.IsDevelopment())
         options.RoutePrefix = string.Empty; // Serve Swagger at root "/"
     });
 }
+else
+{
+    app.UseHsts();
+}
 
+app.UseHttpsRedirection();
+app.UseCors("AllowAngular");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
