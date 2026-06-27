@@ -1,4 +1,4 @@
-@if (tasks.length === 0) {
+@if (tasks().length === 0) {
   <div class="empty-state">
     <mat-icon>assignment</mat-icon>
     <p>No tasks found.</p>
@@ -6,10 +6,10 @@
   </div>
 } @else {
   <div class="task-list">
-    @for (task of tasks; track task.id) {
+    @for (task of tasks(); track task.id) {
       <mat-card
         class="task-card"
-        [class.selected]="task.id === selectedTaskId"
+        [class.selected]="task.id === selectedTaskId()"
         [class.completed]="task.isCompleted"
         (click)="taskSelected.emit(task)">
 

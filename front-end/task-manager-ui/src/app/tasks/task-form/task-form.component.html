@@ -1,7 +1,7 @@
 <div class="form-container">
   <div class="form-header">
-    <mat-icon color="primary">{{ isEditMode ? 'edit_note' : 'add_task' }}</mat-icon>
-    <h3>{{ isEditMode ? 'Edit Task' : 'New Task' }}</h3>
+    <mat-icon color="primary">{{ isEditMode() ? 'edit_note' : 'add_task' }}</mat-icon>
+    <h3>{{ isEditMode() ? 'Edit Task' : 'New Task' }}</h3>
   </div>
 
   <mat-divider></mat-divider>
@@ -43,21 +43,21 @@
       </mat-form-field>
     </div>
 
-    @if (isEditMode) {
+    @if (isEditMode()) {
       <mat-checkbox formControlName="isCompleted" color="primary">
         Mark as completed
       </mat-checkbox>
     }
 
     <div class="form-actions">
-      @if (isEditMode) {
+      @if (isEditMode()) {
         <button mat-stroked-button type="button" (click)="cancel()">
           <mat-icon>close</mat-icon> Cancel
         </button>
       }
-      <button mat-raised-button color="primary" type="submit" [disabled]="isLoading">
-        <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
-        {{ isEditMode ? 'Save Changes' : 'Add Task' }}
+      <button mat-raised-button color="primary" type="submit" [disabled]="isLoading()">
+        <mat-icon>{{ isEditMode() ? 'save' : 'add' }}</mat-icon>
+        {{ isEditMode() ? 'Save Changes' : 'Add Task' }}
       </button>
     </div>
   </form>
