@@ -9,9 +9,14 @@
     @for (task of tasks(); track task.id) {
       <mat-card
         class="task-card"
+        role="button"
+        tabindex="0"
+        [attr.aria-pressed]="task.id === selectedTaskId()"
         [class.selected]="task.id === selectedTaskId()"
         [class.completed]="task.isCompleted"
-        (click)="taskSelected.emit(task)">
+        (click)="taskSelected.emit(task)"
+        (keydown.enter)="taskSelected.emit(task)"
+        (keydown.space)="taskSelected.emit(task); $event.preventDefault()">
 
         <mat-card-content>
           <div class="task-header">
