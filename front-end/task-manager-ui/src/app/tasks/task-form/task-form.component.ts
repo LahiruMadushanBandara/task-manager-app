@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -15,7 +14,6 @@ import { PRIORITY_OPTIONS, Task, TaskPriority, UpdateTaskRequest } from '../../m
 @Component({
     selector: 'app-task-form',
     imports: [
-        CommonModule,
         ReactiveFormsModule,
         MatFormFieldModule,
         MatInputModule,

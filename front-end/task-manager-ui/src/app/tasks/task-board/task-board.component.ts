@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -24,27 +23,25 @@ import { SnackbarService } from '../../shared/snackbar.service';
 import { PRIORITY_OPTIONS, SORT_OPTIONS, Task, TaskFilterParams } from '../../models/task.model';
 
 @Component({
-  selector: 'app-task-board',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatCardModule,
-    MatProgressBarModule,
-    MatTooltipModule,
-    MatDividerModule,
-    TaskListComponent,
-    TaskFormComponent,
-  ],
-  templateUrl: './task-board.component.html',
-  styleUrls: ['./task-board.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-task-board',
+    imports: [
+        ReactiveFormsModule,
+        MatToolbarModule,
+        MatButtonModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatCardModule,
+        MatProgressBarModule,
+        MatTooltipModule,
+        MatDividerModule,
+        TaskListComponent,
+        TaskFormComponent,
+    ],
+    templateUrl: './task-board.component.html',
+    styleUrls: ['./task-board.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TaskBoardComponent {
   private readonly taskService = inject(TaskService);

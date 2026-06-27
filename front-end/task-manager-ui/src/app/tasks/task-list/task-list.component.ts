@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,7 +12,6 @@ import { Task, TaskPriority } from '../../models/task.model';
 @Component({
     selector: 'app-task-list',
     imports: [
-        CommonModule,
         DatePipe,
         MatCardModule,
         MatCheckboxModule,
@@ -33,10 +32,6 @@ export class TaskListComponent {
   readonly taskSelected = output<Task>();
   readonly toggleComplete = output<Task>();
   readonly deleteTask = output<Task>();
-
-  priorityColor(priority: number): string {
-    return priority === 2 ? 'warn' : priority === 1 ? 'accent' : 'primary';
-  }
 
   priorityClass(priority: TaskPriority): string {
     return priority === 2 ? 'priority-high' : priority === 1 ? 'priority-medium' : 'priority-low';

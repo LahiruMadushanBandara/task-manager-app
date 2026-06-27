@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -14,7 +13,6 @@ import { SnackbarService } from '../../shared/snackbar.service';
 @Component({
     selector: 'app-login',
     imports: [
-        CommonModule,
         ReactiveFormsModule,
         MatCardModule,
         MatFormFieldModule,
