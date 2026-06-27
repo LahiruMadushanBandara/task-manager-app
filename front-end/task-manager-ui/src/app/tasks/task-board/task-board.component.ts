@@ -20,7 +20,7 @@ import { TaskFormComponent } from '../task-form/task-form.component';
 import { TaskService } from '../task.service';
 import { AuthService } from '../../auth/auth.service';
 import { SnackbarService } from '../../shared/snackbar.service';
-import { PRIORITY_OPTIONS, SORT_OPTIONS, Task, TaskFilterParams } from '../../models/task.model';
+import { PRIORITY_OPTIONS, SORT_OPTIONS, Task, TaskFilterParams, TaskPriority, UpdateTaskRequest } from '../../models/task.model';
 
 @Component({
     selector: 'app-task-board',
@@ -98,7 +98,7 @@ export class TaskBoardComponent {
   }
 
   get username(): string {
-    return this.auth.getCredentials()?.username ?? '';
+    return this.auth.username();
   }
 
   private buildFilters(): TaskFilterParams {
@@ -106,7 +106,7 @@ export class TaskBoardComponent {
     return {
       search:      raw.search?.trim() || undefined,
       isCompleted: raw.isCompleted ?? undefined,
-      priority:    raw.priority != null ? (raw.priority as 0 | 1 | 2) : undefined,
+      priority:    raw.priority != null ? (raw.priority as TaskPriority) : undefined,
       sortBy:      raw.sortBy || 'createdat',
       sortDir:     (raw.sortDir as 'asc' | 'desc') || 'desc',
     };
@@ -120,13 +120,7 @@ export class TaskBoardComponent {
     this.selectedTask.set(null);
   }
 
-  onFormSubmit(data: {
-    title: string;
-    description?: string;
-    isCompleted: boolean;
-    priority: 0 | 1 | 2;
-    dueDate?: string;
-  }): void {
+  onFormSubmit(data: UpdateTaskRequest): void {
     this.isSubmitting.set(true);
     const current = this.selectedTask();
 
