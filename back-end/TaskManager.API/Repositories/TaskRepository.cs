@@ -28,23 +28,22 @@ public class TaskRepository(AppDbContext context) : ITaskRepository
         if (filters.Priority.HasValue)
             query = query.Where(t => t.Priority == filters.Priority.Value);
 
-        query = (filters.SortBy.ToLower(), filters.SortDir.ToLower()) switch
+        var asc = filters.SortDir.Equals("asc", StringComparison.OrdinalIgnoreCase);
+
+        var ordered = filters.SortBy.ToLower() switch
         {
-            ("title",     "asc")  => query.OrderBy(t => t.Title),
-            ("title",     _)      => query.OrderByDescending(t => t.Title),
-            ("priority",  "asc")  => query.OrderBy(t => t.Priority),
-            ("priority",  _)      => query.OrderByDescending(t => t.Priority),
-            ("duedate",   "asc")  => query.OrderBy(t => t.DueDate),
-            ("duedate",   _)      => query.OrderByDescending(t => t.DueDate),
-            (_,           "asc")  => query.OrderBy(t => t.CreatedAt),
-            _                     => query.OrderByDescending(t => t.CreatedAt),
+            "title"    => asc ? query.OrderBy(t => t.Title)     : query.OrderByDescending(t => t.Title),
+            "priority" => asc ? query.OrderBy(t => t.Priority)  : query.OrderByDescending(t => t.Priority),
+            "duedate"  => asc ? query.OrderBy(t => t.DueDate)   : query.OrderByDescending(t => t.DueDate),
+            _          => asc ? query.OrderBy(t => t.CreatedAt) : query.OrderByDescending(t => t.CreatedAt),
         };
 
-        return await query.ToListAsync(cancellationToken);
+        // Tie-break on a unique key so equal sort values keep a deterministic order.
+        return await ordered.ThenByDescending(t => t.Id).ToListAsync(cancellationToken);
     }
 
     public Task<TaskItem?> GetByIdAsync(int id, int userId, CancellationToken cancellationToken = default) =>
-        context.Tasks.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId, cancellationToken);
+        context.Tasks.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId, cancellationToken);
 
     public async Task<TaskItem> CreateAsync(TaskItem task, CancellationToken cancellationToken = default)
     {
@@ -53,9 +52,9 @@ public class TaskRepository(AppDbContext context) : ITaskRepository
         return task;
     }
 
-    // Entity is already tracked by GetByIdAsync, so SaveChanges updates only changed columns.
     public async Task<TaskItem> UpdateAsync(TaskItem task, CancellationToken cancellationToken = default)
     {
+        context.Tasks.Update(task);
         await context.SaveChangesAsync(cancellationToken);
         return task;
     }
