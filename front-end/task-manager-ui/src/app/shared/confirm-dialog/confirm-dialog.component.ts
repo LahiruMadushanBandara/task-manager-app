@@ -13,8 +13,7 @@ export interface ConfirmDialogData {
     selector: 'app-confirm-dialog',
     imports: [MatDialogModule, MatButtonModule, MatIconModule],
     templateUrl: './confirm-dialog.component.html',
-    styleUrls: ['./confirm-dialog.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    styleUrls: ['./confirm-dialog.component.scss']
 })
 export class ConfirmDialogComponent {
   readonly data = inject<ConfirmDialogData>(MAT_DIALOG_DATA);

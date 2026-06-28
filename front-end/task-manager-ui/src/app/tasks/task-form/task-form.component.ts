@@ -26,8 +26,7 @@ import { PRIORITY_OPTIONS, Task, TaskPriority, UpdateTaskRequest } from '../../m
         MatDividerModule,
     ],
     templateUrl: './task-form.component.html',
-    styleUrls: ['./task-form.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    styleUrls: ['./task-form.component.scss']
 })
 export class TaskFormComponent {
   readonly selectedTask = input<Task | null>(null);

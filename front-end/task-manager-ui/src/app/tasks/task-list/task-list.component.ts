@@ -22,8 +22,7 @@ import { Task, TaskPriority } from '../../models/task.model';
         MatDividerModule,
     ],
     templateUrl: './task-list.component.html',
-    styleUrls: ['./task-list.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    styleUrls: ['./task-list.component.scss']
 })
 export class TaskListComponent {
   readonly tasks = input<Task[]>([]);

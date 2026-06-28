@@ -40,8 +40,7 @@ import { PRIORITY_OPTIONS, SORT_OPTIONS, Task, TaskFilterParams, TaskPriority, U
         TaskFormComponent,
     ],
     templateUrl: './task-board.component.html',
-    styleUrls: ['./task-board.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    styleUrls: ['./task-board.component.scss']
 })
 export class TaskBoardComponent {
   private readonly taskService = inject(TaskService);
