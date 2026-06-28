@@ -6,7 +6,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatDividerModule } from '@angular/material/divider';
 import { Task, TaskPriority } from '../../models/task.model';
 
 @Component({
@@ -19,7 +18,6 @@ import { Task, TaskPriority } from '../../models/task.model';
         MatButtonModule,
         MatChipsModule,
         MatTooltipModule,
-        MatDividerModule,
     ],
     templateUrl: './task-list.component.html',
     styleUrls: ['./task-list.component.scss']

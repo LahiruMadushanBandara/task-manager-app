@@ -5,8 +5,6 @@ namespace TaskManager.API.Helpers;
 
 public static class PasswordHasher
 {
-    public static string GenerateSalt() => Guid.NewGuid().ToString("N");
-
     public static string Hash(string password, string salt)
     {
         var combined = Encoding.UTF8.GetBytes(password + salt);

@@ -18,8 +18,4 @@ export class SnackbarService {
       panelClass: ['snack-error'],
     });
   }
-
-  info(message: string): void {
-    this.snackBar.open(message, 'Close', { duration: 3000 });
-  }
 }
