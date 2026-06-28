@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../auth.service';
 import { SnackbarService } from '../../shared/snackbar.service';
+import { finalize } from 'rxjs';
 
 @Component({
     selector: 'app-login',
@@ -22,8 +23,7 @@ import { SnackbarService } from '../../shared/snackbar.service';
         MatProgressSpinnerModule,
     ],
     templateUrl: './login.component.html',
-    styleUrls: ['./login.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
   private readonly fb = inject(FormBuilder);
@@ -48,12 +48,11 @@ export class LoginComponent {
     this.isLoading.set(true);
     const { username, password } = this.form.getRawValue();
 
-    this.auth.verify(username, password).subscribe({
+    this.auth.verify(username, password).pipe(
+      finalize(() => this.isLoading.set(false))
+    ).subscribe({
       next: () => this.router.navigate(['/tasks']),
-      error: () => {
-        this.isLoading.set(false);
-        this.snackbar.error('Invalid username or password.');
-      },
+      error: () => this.snackbar.error('Invalid username or password.'),
     });
   }
 }
